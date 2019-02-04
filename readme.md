@@ -108,9 +108,9 @@ The project site contains a full working sample of the code-behind model in the 
 ## Requirements
 The library has been developed and tested using the following tools:
 
-.NET Core 3.0 Preview 2
-ASP.NET Core 3.0 Preview 2
-Visual Studio 2019 
+* .NET Core 3.0 Preview 2
+* ASP.NET Core 3.0 Preview 2
+* Visual Studio 2019 
 
 ## Acknowledgements
 Work is based on the code available in Caliburn.Micro.
