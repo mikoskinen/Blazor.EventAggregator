@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28527.54
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventAggregator.Blazor", "..\EventAggregator.Blazor.csproj", "{C6623EF9-380D-44CF-A495-39461E78C3EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventAggregator.Blazor", "EventAggregator.Blazor.csproj", "{C6623EF9-380D-44CF-A495-39461E78C3EF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{E87D2F2C-D4A3-4144-BA7A-000B87A2705D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBehind.Server", "..\..\samples\CodeBehind\CodeBehind.Server\CodeBehind.Server.csproj", "{57CACFB6-836F-4A87-8597-7C32175DFF3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBehind.Server", "..\samples\CodeBehind\CodeBehind.Server\CodeBehind.Server.csproj", "{57CACFB6-836F-4A87-8597-7C32175DFF3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBehind.App", "..\..\samples\CodeBehind\CodeBehind.App\CodeBehind.App.csproj", "{DAFABC0C-E56D-4A1F-8219-E447E036E70A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBehind.App", "..\samples\CodeBehind\CodeBehind.App\CodeBehind.App.csproj", "{DAFABC0C-E56D-4A1F-8219-E447E036E70A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeBehind", "CodeBehind", "{E5EC7E31-74C9-454A-84E3-0A9762EF7CDD}"
 EndProject
