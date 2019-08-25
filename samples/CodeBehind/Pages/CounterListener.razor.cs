@@ -11,7 +11,7 @@ namespace CodeBehind.Pages
 
         public int currentCount = 0;
 
-        protected override void OnInit()
+        protected override void OnInitialized()
         {
             _eventAggregator.Subscribe(this);
         }
