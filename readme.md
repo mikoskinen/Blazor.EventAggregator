@@ -1,8 +1,8 @@
 # Blazor.EventAggregator
 
-Blazor.EventAggregator is a lightweight Event Aggregator for Blazor. Blazor is an upcoming technology included in ASP.NET Core 3.0 (currently in Preview 8).
+Blazor.EventAggregator is a lightweight Event Aggregator for Blazor. Blazor is an upcoming technology included in ASP.NET Core 3.0 (currently in Preview 9).
 
-*29.8.2019: Updated to work with .NET Core v3.0.0-preview8*
+*8.9.2019: Updated to work with .NET Core v3.0.0-preview9*
 
 Event aggregator is used for indirect component to component communication. In event aggregator pattern you have message/event publishers and subscribers. In the case of Blazor, component can publish its events and other component(s) can react to those events. 
 
@@ -110,7 +110,7 @@ The project site contains a full working sample of the code-behind model in the 
 ## Requirements
 The library has been developed and tested using the following tools:
 
-* .NET Core 3.0 Preview 8
+* .NET Core 3.0 Preview 9
 * Visual Studio 2019 Preview
 
 ## Acknowledgements
