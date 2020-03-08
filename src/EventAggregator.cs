@@ -4,12 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace EventAggregator.Blazor
 {
     public class EventAggregator : IEventAggregator
     {
+        private readonly EventAggregatorOptions _options;
         private readonly List<Handler> _handlers = new List<Handler>();
+
+        public EventAggregator(IOptions<EventAggregatorOptions> options)
+        {
+            _options = options.Value;
+        }
 
         /// <inheritdoc />
         public virtual void Subscribe(object subscriber)
@@ -69,12 +77,37 @@ namespace EventAggregator.Blazor
 
             await Task.WhenAll(tasks);
 
-            foreach (var handler in handlersToNotify.Where(x => !x.IsDead))
+            if (_options.AutoRefresh)
             {
-                if (handler.Reference.Target is ComponentBase component)
+                foreach (var handler in handlersToNotify.Where(x => !x.IsDead))
                 {
-                    var myMethod = component.GetType().GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic);
-                    myMethod.Invoke(component, null);
+                    if (!(handler.Reference.Target is ComponentBase component))
+                    {
+                        continue;
+                    }
+
+                    var invoker = component.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                        .FirstOrDefault(x =>
+                            string.Equals(x.Name, "InvokeAsync") &&
+                            x.GetParameters().FirstOrDefault()?.ParameterType == typeof(Action));
+
+                    if (invoker == null)
+                    {
+                        continue;
+                    }
+                    
+                    var stateHasChangedMethod = component.GetType()
+                        .GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                    if (stateHasChangedMethod == null)
+                    {
+                        continue;
+                    }
+                    
+                    var args = new object[] { new Action(() => stateHasChangedMethod.Invoke(component, null)) };
+                    var tOut = (Task) invoker.Invoke(component, args);
+                            
+                    await tOut;
                 }
             }
 
@@ -107,7 +140,7 @@ namespace EventAggregator.Blazor
                 foreach (var handleInterface in interfaces)
                 {
                     var type = handleInterface.GetTypeInfo().GenericTypeArguments[0];
-                    var method = handleInterface.GetRuntimeMethod("HandleAsync", new[] { type });
+                    var method = handleInterface.GetRuntimeMethod("HandleAsync", new[] {type});
 
                     if (method != null)
                     {
@@ -136,8 +169,8 @@ namespace EventAggregator.Blazor
 
                 var tasks = _supportedHandlers
                     .Where(handler => handler.Key.GetTypeInfo().IsAssignableFrom(messageType.GetTypeInfo()))
-                    .Select(pair => pair.Value.Invoke(target, new[] { message }))
-                    .Select(result => (Task)result)
+                    .Select(pair => pair.Value.Invoke(target, new[] {message}))
+                    .Select(result => (Task) result)
                     .ToList();
 
                 return Task.WhenAll(tasks);
@@ -145,7 +178,8 @@ namespace EventAggregator.Blazor
 
             public bool Handles(Type messageType)
             {
-                return _supportedHandlers.Any(pair => pair.Key.GetTypeInfo().IsAssignableFrom(messageType.GetTypeInfo()));
+                return _supportedHandlers.Any(
+                    pair => pair.Key.GetTypeInfo().IsAssignableFrom(messageType.GetTypeInfo()));
             }
         }
     }

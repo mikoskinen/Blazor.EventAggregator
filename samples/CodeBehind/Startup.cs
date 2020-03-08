@@ -22,7 +22,8 @@ namespace CodeBehind
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
-            services.AddSingleton<IEventAggregator, EventAggregator.Blazor.EventAggregator>();
+
+            services.AddEventAggregator(options => options.AutoRefresh = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

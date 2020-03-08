@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
     <IsPackable>true</IsPackable>
-    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
     <LangVersion>7.3</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Mikael Koskinen</Authors>
@@ -15,23 +14,36 @@
     <Product>EventAggregator.Blazor</Product>
     <AssemblyName>EventAggregator.Blazor</AssemblyName>
     <RootNamespace>EventAggregator.Blazor</RootNamespace>
-    <PackageLicenseUrl>https://github.com/mikoskinen/Blazor.EventAggregator/blob/master/LICENSE</PackageLicenseUrl>
-    <RestoreAdditionalProjectSources>
-      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
-      https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
-    </RestoreAdditionalProjectSources>
-    <Version>1.5.0</Version>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>2.0</MinVerMinimumMajorMinor>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- .js/.css files will be referenced via <script>/<link> tags; other content files will just be included in the app's 'dist' directory without any tags referencing them -->
-    <EmbeddedResource Include="content\**\*.js" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
-    <EmbeddedResource Include="content\**\*.css" LogicalName="blazor:css:%(RecursiveDir)%(Filename)%(Extension)" />
-    <EmbeddedResource Include="content\**" Exclude="**\*.js;**\*.css" LogicalName="blazor:file:%(RecursiveDir)%(Filename)%(Extension)" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.2" />
+    <PackageReference Include="MinVer" Version="2.2.0" />
   </ItemGroup>
+  
+  <Target Name="CopyMissingBlazorContent" BeforeTargets="BlazorCompleteStandalonePublish">
+    <!-- https://github.com/aspnet/AspNetCore/issues/13103#issuecomment-555172130 -->
+    <PropertyGroup>
+      <FullPublishDir>$(PublishDir)</FullPublishDir>
+      <FullPublishDir Condition=" $(FullPublishDir.Contains(':')) != 'true' ">$(MSBuildThisFileDirectory)$(PublishDir)</FullPublishDir>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.0.0" />
-  </ItemGroup>
+    <Message Text="PublishIntermediateOutputPath: $(PublishIntermediateOutputPath)" Importance="high" />
+    <Message Text="OutDir: $(OutDir)" Importance="high" />
+    <Message Text="BlazorPublishDistDir: $(BlazorPublishDistDir)" Importance="High" />
+    <Message Text="PublishDir: $(PublishDir)" Importance="High" />
+    <Message Text="FullPublishDir: $(FullPublishDir)" Importance="High" />
+
+    <CreateItem Include="$(FullPublishDir)wwwroot\**\*.*">
+      <Output TaskParameter="Include" ItemName="FilesToCopy" />
+    </CreateItem>
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(FullPublishDir)$(BlazorPublishDistDir)%(RecursiveDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" Retries="3" RetryDelayMilliseconds="300" />
+    <RemoveDir Directories="$(FullPublishDir)wwwroot" />
+    <Delete Files="$(FullPublishDir)$(BlazorPublishDistDir)**\*.map" />
+  </Target>
 
 </Project>
