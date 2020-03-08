@@ -2,7 +2,7 @@
 
 Blazor.EventAggregator is a lightweight Event Aggregator for Blazor. 
 
-*25.9.2019: Updated to work with .NET Core v3.0.0*
+* 3/2020: Updated to work with .NET Core v3.1.0
 
 Event aggregator is used for indirect component to component communication. In event aggregator pattern you have message/event publishers and subscribers. In the case of Blazor, component can publish its events and other component(s) can react to those events. 
 
@@ -16,11 +16,11 @@ Also note that the library has only been tested with the server-side version of 
 
 ## Getting Started
 
-First register EventAggregator as singleton in app’s ConfigureServices:
+First register EventAggregator in app’s ConfigureServices:
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddSingleton<EventAggregator.Blazor.IEventAggregator, EventAggregator.Blazor.EventAggregator>();
+    services.AddEventAggregator();
 }
 ```
 
@@ -104,6 +104,16 @@ public class CounterListenerComponent : ComponentBase, IHandle<CounterIncreasedM
     }
 }
 ```
+
+## Note about auto refresh
+
+The library can try to automatically call subscriber component's StateHasChanged after it has handled the event. By default this functionality is disabled. You can enable it through options:
+
+```
+services.AddEventAggregator(options => options.AutoRefresh = true);
+```
+
+Auto refresh is based on reflection and it assumes that the subscriber inherits from ComponentBase.
 	
 ## Samples
 
@@ -112,7 +122,7 @@ The project site contains a full working sample of the code-behind model in the 
 ## Requirements
 The library has been developed and tested using the following tools:
 
-* .NET Core 3.0
+* .NET Core 3.1
 * Visual Studio 2019
 
 ## Acknowledgements
