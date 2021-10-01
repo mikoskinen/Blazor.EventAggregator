@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.2" />
-    <PackageReference Include="MinVer" Version="2.2.0" />
+    <PackageReference Include="MinVer" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
   
   <Target Name="CopyMissingBlazorContent" BeforeTargets="BlazorCompleteStandalonePublish">
